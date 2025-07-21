@@ -10,9 +10,12 @@ const ContextProvider = (props) => {
     const [showResult, setShowResult] = useState(false);
     const [loading, setLoading] = useState(false);
     const [resultData, setResultData] = useState("");
-    
+    const [jobDescription, setJobDescription] = useState("");
+    const [jobDescAttached, setJobDescAttached] = useState(false);
+    const [jobFileName, setJobFileName] = useState("");
+
     const delay = (index, nextWord) => {
-        setTimeout(function() {
+        setTimeout(function () {
             setResultData(prev => prev + nextWord);
         }, 75 * index)
     }
@@ -23,20 +26,29 @@ const ContextProvider = (props) => {
     }
 
     const onSent = async (prompt) => {
-        setInput("")
-        setResultData("")
-        setLoading(true)
-        setShowResult(true)
-        let response;
-        if (prompt !== undefined) {
-            response = await run(prompt);
-            setRecentPrompt(prompt)
+        setJobDescription("");
+        setJobDescAttached(false);
+        setJobFileName("");
+        setInput("");
+        setResultData("");
+        setLoading(true);
+        setShowResult(true);
+
+        if (jobDescAttached && jobFileName) {
+            setRecentPrompt(
+                <>
+                    <div>{input}</div>
+                    <div style={{ fontSize: "0.85em", color: "#555", marginTop: "2px" }}>
+                        ({jobFileName} attached)
+                    </div>
+                </>
+            );
         } else {
-            setPrevPrompts(prev => [...prev, input])
-            setRecentPrompt(input)
-            response = await run(input)
+            setRecentPrompt(input);
         }
-        
+
+        const response = await run(prompt);
+
         let newResponse = response.replace(/\n/g, '<br>')
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/(?<!<br>)\*\s/g, '<br>')
@@ -46,32 +58,13 @@ const ContextProvider = (props) => {
 
         for (let i = 0; i < newResponse.length; i++) {
             const nextWord = newResponse[i];
-            delay(i, nextWord + " ")
+            delay(i, nextWord + " ");
         }
-        // let responseArray = response.split();
-        // let boldResponse = "";
 
-        // for (let i = 0; i < responseArray.length; i++) {
-        //     if(i === 0 || i % 2 !== 1) {
-        //         boldResponse += responseArray[i];
-        //     } else {
-        //         boldResponse += "<b>" + responseArray[i] + "</b>";
-        //     }
-        // }
-
-        // let newResponse = boldResponse.split("*").join("</br>");
-        // let newResponseArray = newResponse.split(" ");
-        
-        // for (let i = 0; i < newResponseArray.length; i++) {
-        //     const nextWord = newResponseArray[i];
-        //     delay(i, nextWord + " ")
-        // }
-
-        setLoading(false)
-    }
-
+        setLoading(false);
+    };
     const contextValue = {
-        prevPrompts, 
+        prevPrompts,
         setPrevPrompts,
         onSent,
         setRecentPrompt,
@@ -81,7 +74,13 @@ const ContextProvider = (props) => {
         resultData,
         input,
         setInput,
-        newChat
+        newChat,
+        jobDescription,
+        setJobDescription,
+        jobDescAttached,
+        setJobDescAttached,
+        jobFileName,
+        setJobFileName,
     }
     return (
         <Context.Provider value={contextValue}>

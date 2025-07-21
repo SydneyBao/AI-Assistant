@@ -2,16 +2,23 @@ import React, { useContext, useRef, useEffect, useState } from 'react'
 import './main.css'
 import { assets } from '../../assets/assets'
 import { Context } from '../../context/context'
+import { pdfjs } from 'react-pdf';
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+    'pdfjs-dist/build/pdf.worker.min.mjs',
+    import.meta.url,
+).toString();
+
 
 
 const Main = () => {
-    const { onSent, recentPrompt, showResult, loading, resultData, setInput, input, newChat } = useContext(Context)
+    const { onSent, recentPrompt, showResult, loading, resultData, setInput, input, jobDescription, setJobDescription, jobDescAttached, setJobDescAttached, jobFileName, setJobFileName } = useContext(Context)
     const resultRef = useRef(null);
     const [resumeText, setResumeText] = useState("");
+    const [linkedinText, setLinkedinText] = useState("");
 
     useEffect(() => {
         const fetchResumeText = async () => {
-            const loadResume = pdfjs.getDocument('./resume.pdf');
+            const loadResume = pdfjs.getDocument('/resume.pdf');
             const pdf = await loadResume.promise;
             let text = ""
             for (let i = 1; i <= pdf.numPages; i++) {
@@ -21,6 +28,12 @@ const Main = () => {
             }
             setResumeText(text);
         };
+        const fetchLinkedinText = async () => {
+            const response = await fetch('/linkedin.txt');
+            const text = await response.text();
+            setLinkedinText(text);
+        };
+        fetchLinkedinText();
         fetchResumeText();
     }, []);
 
@@ -32,8 +45,8 @@ const Main = () => {
 
     const handleSend = () => {
         if (input.trim()) {
-            setInput(`Resume:\n${resumeText}\n\nQuestion: \n${input}`);
-            onSent();
+            const prompt = `Sydney's Resume:\n${resumeText}\n\nSydney's LinkedIn:\n${linkedinText}\n\nQuestion: \n${input}\n\nJob Description:\n${jobDescription}`;
+            onSent(prompt);
         }
     };
 
@@ -42,14 +55,6 @@ const Main = () => {
             <div className='nav'>
                 <p><span>Sydney Bao's</span></p>
                 <p>Personal Chatbot</p>
-                <a
-                    href="https://www.linkedin.com/in/sydney-bao/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="linkedin-link"
-                >
-                    <img src={assets.linkedin_icon} alt="LinkedIn" style={{ height: 24, marginRight: 8 }} />
-                </a>
             </div>
             <div className="main-container">
                 {!showResult ?
@@ -75,11 +80,10 @@ const Main = () => {
                     </> :
                     <div className='result' ref={resultRef}>
                         <div className="result-title">
-                            {/* <img src={assets.user_icon} alt = ""/> */}
-                            <p>{recentPrompt}</p>
+                            {recentPrompt}
                         </div>
                         <div className="result-data">
-                            <img src="./sign.png" alt="" />
+                            <img src={assets.logo} alt="" />
                             {loading ?
                                 <div className="loader">
                                     <hr />
@@ -91,7 +95,6 @@ const Main = () => {
                                 </div>
 
                             }
-                            {/* <p>{resultData}</p> */}
                         </div>
                     </div>
                 }
@@ -103,7 +106,7 @@ const Main = () => {
                                 onChange={(e) => setInput(e.target.value)}
                                 value={input}
                                 type="text"
-                                placeholder='Ask me anything...'
+                                placeholder='Ask me anything or upload a job description...'
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' && !e.metaKey && input.trim()) {
                                         e.preventDefault();
@@ -112,11 +115,74 @@ const Main = () => {
                                 }}
                             />
                             {input ? <img onClick={handleSend} src={assets.send_icon} alt="" /> : null}
+                            <label className="custom-file-upload">
+                                <input
+                                    type="file"
+                                    accept=".txt,.pdf"
+                                    style={{ display: "none" }}
+                                    onChange={async (e) => {
+                                        const file = e.target.files[0];
+                                        if (!file) return;
+                                        let jobDescText = "";
+                                        if (file.type === "application/pdf") {
+                                            const pdf = await pdfjs.getDocument(URL.createObjectURL(file)).promise;
+                                            for (let i = 1; i <= pdf.numPages; i++) {
+                                                const page = await pdf.getPage(i);
+                                                const content = await page.getTextContent();
+                                                jobDescText += content.items.map(item => item.str).join(' ') + "\n";
+                                            }
+                                        } else {
+                                            jobDescText = await file.text();
+                                        }
+                                        setJobDescription(jobDescText);
+                                        setJobDescAttached(true);
+                                        setJobFileName(file.name);
+                                        e.target.value = "";
+                                    }}
+                                />
+                                {jobDescAttached && jobFileName ? (
+                                    <span
+                                        className="job-file-name"
+                                        style={{ color: "green", marginLeft: "8px", cursor: "pointer" }}
+                                    >
+                                        {jobFileName}
+                                    </span>
+                                ) : (
+                                    <span className="upload-tooltip">
+                                        <img src={assets.upload_icon} alt="Upload" style={{ width: "24px", height: "24px", verticalAlign: "middle" }} />
+                                        <span className="tooltip-text">Upload job description (.pdf or .txt)</span>
+                                    </span>
+                                )}
+                            </label>
                         </div>
                     </div>
-                    <p className="bottom-info">
-                        This chatbot is powered by the Gemini API
-                    </p>
+
+                    <div className="bottom-info">
+                        <a
+                            href="https://github.com/SydneyBao"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="linkedin-link"
+                        >
+                            <img src={assets.github_icon} alt="GitHub" style={{ width: "24px", height: "24px", verticalAlign: "middle", marginLeft: "6px" }} />
+                        </a>
+                        <a
+                            href="https://www.linkedin.com/in/sydney-bao/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="linkedin-link"
+                        >
+                            <img src={assets.linkedin_icon} alt="LinkedIn" style={{ width: "24px", height: "24px", verticalAlign: "middle", marginLeft: "6px" }} />
+                        </a>
+                        <a
+                            href="https://sydneybao.com/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="linkedin-link"
+                        >
+                            <img src={assets.logo} alt="Sydney Website" style={{ height: "24px", verticalAlign: "middle", marginLeft: "6px" }} />
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

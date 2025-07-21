@@ -13,11 +13,12 @@
     padding: 20px;
     color: #585858;
 }
-.nav span{
+
+.nav span {
     font-size: 30px;
 }
 
-.main .nav img{
+.main .nav img {
     width: 40px;
     border-radius: 50%;
 }
@@ -25,7 +26,7 @@
 .main-container {
     max-width: 900px;
     margin: auto;
-} 
+}
 
 .main .greet {
     margin: 50px 0px;
@@ -35,7 +36,8 @@
     padding: 20px;
 }
 
-.main .greet span, .nav span {
+.main .greet span,
+.nav span {
     background: -webkit-linear-gradient(14deg, #448b9a, #bbced2);
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -81,7 +83,7 @@
 }
 
 .main .card p {
-    margin: 0; 
+    margin: 0;
     color: white;
     font-size: 17px;
 }
@@ -159,8 +161,9 @@
 .result-title {
     margin: 40px 0px;
     display: flex;
+    flex-direction: column;
     justify-content: flex-end;
-    gap: 20px;
+    gap: 4px;
     background-color: #f0f0f0;
     border-radius: 20px;
     padding: 10px 20px;
@@ -168,7 +171,7 @@
     align-self: flex-end;
 }
 
-.result img{
+.result img {
     width: 55px;
     border-radius: 50%;
 }
@@ -179,7 +182,7 @@
     gap: 10px;
 }
 
-.loader{
+.loader {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -197,10 +200,11 @@
 }
 
 @keyframes loader {
-    0%{
+    0% {
         background-position: -800px 0px;
     }
-    100%{
+
+    100% {
         background-position: 800px 0px;
     }
 }
@@ -216,14 +220,62 @@
         flex: none;
         width: 150px;
     }
+
     .main-bottom img {
         width: 20px;
     }
+
     .search-box {
         padding: 5px 10px;
     }
+
     .search-box div {
         gap: 5px;
     }
 }
 
+.custom-file-upload {
+    display: inline-block;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 8px;
+    transition: background 0.2s;
+}
+
+.custom-file-upload:hover {
+    background: #e0e0e0;
+}
+
+.custom-file-upload span {
+    vertical-align: middle;
+}
+
+.upload-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 180px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 6px 8px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    /* Position above the icon */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.2s;
+    font-size: 0.95em;
+}
+
+.upload-tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
