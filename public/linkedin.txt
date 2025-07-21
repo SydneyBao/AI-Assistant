@@ -1,0 +1,536 @@
+About
+Eleven years of coding experience, dedicated to exploring the boundaries and limitations of technology. I am a self-driven leader committed to making a difference, whether by driving change in the college student government, conducting cutting-edge research to advocate for marginalized youth, or developing a mobile application that builds in-person connections and fosters community. I aspire to push the innovative possibilities between creativity and technology to make a lasting impact on the world around me.
+
+Experience
+Software Engineer Intern at Google · Internship
+May 2025 - Present · 3 mos
+Seattle, Washington, United States · On-siteSeattle, Washington, United States · On-site
+Led the development of a proxy solution for Flutter web applications, optimizing cross-origin communication and accelerating project completion by 50%. Users have the flexibility to define and rewrite paths using strings, regex, and glob syntax
+Led the implementation of a YAML web development configuration file, streamlining the developer experience for over 2 million engineers by providing an intuitive system to manage the host, port, headers, and proxy rules
+Enhanced feature usability by leading research into competing UI frameworks, publishing a detailed design document, ensuring comprehensive testing, and presenting a prototype to the Google Dart team to integrate critical feedback
+Skills: Dart, YAML, Flutter, Research and Development (R&D), Software Infrastructure, Proxy Server, Data Analysis, Open-Source
+
+Software Engineer Fellow
+Headstarter AI
+Jul 2024 - Sep 2024 · 3 mos
+Programmed 5 AI projects leveraging Pinecone as a scalable vector database, utilizing OpenAI API and Gemini API for advanced NLP and generative tasks, and implementing embeddings for semantic matching
+Analyzed user and site traffic data to explore strategies for reaching 1,000+ usersProgrammed 5 AI projects leveraging Pinecone as a scalable vector database, utilizing OpenAI API and Gemini API for advanced NLP and generative tasks, and implementing embeddings for semantic matching Analyzed user and site traffic data to explore strategies for reaching 1,000+ users
+Skills: Firebase, OpenAI, HTML, Data Analysis, Next.js, Cascading Style Sheets (CSS), React.js
+
+Mobile Engineer Intern
+popper · Internship
+May 2024 - Sep 2024 · 5 mos
+Created an effective user experience design for the Market and Create Event screens, increasing:
+- Daily active users by 30%
+- Average engagement time by 500%
+Enhanced the user experience for mobile devices using React Native, creating intuitive and engaging interfaces. Improvde app performance through testing on XCode and TestFlight and integrating user interface elements with back-end services, including Firebase
+Skills: Cloud Computing, Jira, Debugging, Firebase, Agile Methodologies, Continuous Integration and Continuous Delivery (CI/CD), TestFlight, React Native, Git, Xcode, Data Analysis, User Experience Design (UED)
+
+theCoderSchool
+Coding Instructor
+Seasonal
+Jan 2022 - Jul 2024 · 2 yrs 7 mos
+San Francisco Bay Area · On-siteSan Francisco Bay Area · On-site
+Referred by three parents for my ability to:
+-communicate complex concepts in an approachable and engaging way
+- draw from personal experiences as a coding student to craft adaptable and rewarding lessons
+Introduced fundamental programming concepts (including condition statements, iterations, and data structures) using visual and text-based coding platforms such as Scratch and Python for children aged 7-9. Combined hands-on tutoring with projects that foster individual creativity and problem-solving skills
+Skills: Youth Mentoring, Curriculum Development, Tutoring, Communication, Scratch, Python (Programming Language), Pair Programming
+
+Coding Student
+Mar 2014 - Jun 2023 · 9 yrs 4 mosMar 2014 to Jun 2023 · 9 yrs 4 mos
+- Nine years dedicated to building a solid foundation in Python, Java, HTML, CSS, and JavaScript
+- Placed third in the 2020 and 2021 Coder Games, a nationwide coding competition that tests programming skills under time constraints
+Skills: Technical Proficiency, JavaScript, Java, Creative Problem Solving, Debugging, Raspberry Pi, HTML, TypeScript, Vue.js, Cascading Style Sheets (CSS), Cheerio, React.js, Express.js, Python (Programming Language)
+
+Education
+Northeastern University
+Bachelor of Science - BS, Computer Science and Design
+Sep 2023
+Skills: Docker Products · Threat Modeling · Cloud Computing · Storyboarding · Wireframing · Debugging · Software Design Patterns · JetBrains DataGrip · Team Leadership · IntelliJ IDEA · Figma · StarUML · Communication · Polymorphism · Anaconda · JUnit · Amazon Web Services (AWS) · Design · SQL · Object-Oriented Programming (OOP) · Unified Modeling Language (UML) · Kotlin · Git · Collaborative Problem Solving · Abstraction · Data Analysis · User Interface Design · Figma (Software) · Continuous Integration and Continuous Delivery (CI/CD) · Microsoft Word · Microsoft Excel
+
+Northeastern University London
+Computer Science and Design
+Sep 2023 - Dec 2023
+Activities and societies: Effective Altruism Fellowship
+Studied first semester of Freshman year abroad through Northeastern's Global Scholars program
+
+College of San Mateo
+College/University Preparatory and Advanced High School/Secondary Diploma Program
+Aug 2021 - May 2023
+Grade: 3.88
+Activities and societies: Associated Students of the College of San Mateo, Phi Theta Kappa Honor Society, Middle College Effect, Youth Catalyst Liberatory Leadership
+Skills: Community Outreach · Software Design Patterns · Team Leadership · IntelliJ IDEA · User Experience Design (UED) · Program Management · Adobe Photoshop · Polymorphism · Object-Oriented Programming (OOP) · Collaborative Problem Solving · Leadership · Abstraction
+
+Licenses & certificationsLicenses & certifications
+Group 1 Lakeside investigator
+CITI Program
+Issued Jun 2024 · Expires Jun 2027
+Credential ID 62876093
+
+Introductory AI Literacy
+Northeastern University
+Issued Apr 2024
+Credential ID 661455f1fd37f661cb3c8eb5
+
+Human Subjects Research
+CITI Program
+Issued Mar 2024 · Expires Mar 2027
+Credential ID 61869835
+
+Projects 
+
+Coding for the Youth Research
+Jun 2024 - May 2025
+Associated with Northeastern University
+- Determine to what extent learning by doing and thinking through a problem are most effective when teaching younger students how to code
+- Partnering with JumpStart to integrate STEM into its curriculum for preschoolers in low-income households, aiming to build a strong baseline for a future pursuit in coding and/or technology
+- Determine to what extent learning by doing and thinking through a problem are most effective when teaching younger students how to code - Partnering with JumpStart to integrate STEM into its curriculum for preschoolers in low-income households, aiming to build a strong baseline for a future pursuit in coding and/or technology
+Skills: Research and Development (R&D) · Communication · Early Childhood Education Curriculum · Research Skills · Curriculum Development · Teamwork
+
+Language Development Research
+Feb 2024 - May 2025
+Associated with Northeastern University
+- Fosters a deeper understanding of bilingualism beyond previous research in the field, which has insufficiently acknowledged and valued the unique sociolinguistic and parenting practices of US Latinx families
+- Selected by Dr. Priya Driscoll, the lead researcher and mentor, to represent the research at a university-wide conference. Presented the research's background, procedure, and theoretical underpinnings in front of 50 fellow researchers and faculty
+Skills: Research and Development (R&D) · IRB Certified · Communication · Research Skills
+
+HeadshotNews
+May 2024 - Jul 2024
+Designed and programmed a full-stack news aggregator, using Firebase to store and update the articles daily
+Web scraped 5 popular Esports sites using Puppeteer for HTML parsing and informational retrieval
+Skills: Firebase · Cloud Firestore · Web Scraping · User Experience (UX) · UX Research
+
+Inventory Management
+Jul 2024 - Jul 2024
+- Keeps track of a user's inventory using Firebase and Next.js
+- Users can sign in using an email/password, email link, or Gmail through Firebase authentication
+- Users can add, edit, search for, and delete items from their inventory stored in the Firestore database
+Skills: Firebase · Cloud Firestore · Next.js · Continuous Integration and Continuous Delivery (CI/CD)
+
+Sydney Bao Portfolio
+Jul 2024 - Jul 2024
+A portfolio of all of my recent projects
+Skills: React.js · React · Vanta
+
+Drone Mapping Research
+Sep 2022 - Dec 2022
+Associated with College of San Mateo
+- Used drones to map a tiled model of Henry Cowell Redwoods State Park
+- Created 3D Spatial data and mesh using Agisoft Metashape for photogrammetric processing of images, generating Dense Point Clouds and Depth Maps
+Skills: Research and Development (R&D) · Communication · Drone Photography · Research Skills · Teamwork · Drone Mapping · Agisoft Metashape
+
+Volunteering
+Distribution Leader
+Samaritan House
+Jun 2022 - Jun 2023 · 1 yr 1 mo
+Poverty Alleviation
+Packaged and led the distribution of over 3,000 meals and packaged goods to families facing poverty, ensuring everyone was treated respectfully
+
+Math Tutor
+LifeMovesLifeMoves
+Jun 2022 - Aug 2022 · 3 mos
+Education
+- Tutored elementary and middle school students experiencing homelessness
+- Rewarding to see students dedicated to their education and grasp difficult geometry and algebra math concepts, despite financial circumstances
+
+Advanced Calculus and Analytical Geometry Tutor
+College of San Mateo
+Aug 2021 - Dec 2021 · 5 mos
+- Helped Middle College classmates struggling in Advanced Calculus and Analytical Geometry
+- Classmates began to understand the material and improve their grades after previously failing tests
+- Five of seven classmates who failed their initial exam reported getting an A or B after attending tutoring sessions
+
+Skills
+Threat Modeling
+
+Foundations of Software Engineering (Graduate Level)
+
+Cloud Computing
+
+Machine Learning
+
+Data Analysis
+
+User Experience (UX)
+
+UX Research
+
+Software Infrastructure
+
+Flutter
+
+Proxy Server
+
+Open-Source
+
+Dart
+
+YAML
+
+React
+
+Vanta
+
+Cloud Firestore
+
+Inventory Management
+
+Web Scraping
+
+Teamwork
+
+Drone Mapping Research
+
+Coding for the Youth Research
+
+Communication
+
+Team Leadership
+
+Next.js
+
+OpenAI
+
+Corporate Communications
+
+Early Childhood Education Curriculum
+
+Figma
+
+Storyboarding
+
+Agile Methodologies
+
+Jira
+
+Agile Application Development
+
+Agile Testing
+
+Agile Project Management
+
+Continuous Integration and Continuous Delivery (CI/CD)
+
+Object-Oriented Design
+
+Amazon Web Services (AWS)
+
+Object-Oriented Programming (OOP)
+
+Introduction to Object-Oriented Program Design
+
+IntelliJ IDEA
+
+Software Design Patterns
+
+Polymorphism
+
+Abstraction
+
+Anaconda
+
+Database Design
+
+Docker Products
+
+JetBrains DataGrip
+
+Natural Language Processing (NLP)
+
+Information Retrieval
+
+Artificial Intelligence (AI)
+
+Bootstrap (Framework)
+
+JUnit
+
+Vue.js
+
+Node.js
+
+TypeScript
+
+SQL
+
+Git
+
+Xcode
+
+TestFlight
+
+Debugging
+
+User Experience Design (UED)
+
+Introduction to Web Design
+
+StarUML
+
+Unified Modeling Language (UML)
+
+Firebase
+
+React Native
+
+Atlassian Suite
+
+Tutoring
+
+Pair Programming
+
+Agisoft Metashape
+
+Drone Photography
+
+Drone Mapping
+
+Figma (Software)
+
+Adobe Photoshop
+
+Cheerio
+
+Express.js
+
+React.js
+
+Wireframing
+
+Design
+
+User Interface Design
+
+Laboratory Skills
+
+Research Skills
+
+Language Development Research
+
+Research and Development (R&D)
+
+IRB Certified
+
+Microsoft Word
+
+Microsoft Excel
+
+Collaborative Problem Solving
+
+Community Outreach
+
+Leadership
+
+Program Management
+
+Creative Problem Solving
+
+HTML
+
+Cascading Style Sheets (CSS)
+
+JavaScript
+
+Raspberry Pi
+
+Scratch
+
+Python (Programming Language)
+
+Kotlin
+
+Java
+
+Programming Methods: Java
+
+Teaching
+
+Curriculum Development
+
+Interpersonal Communication
+
+Technical Proficiency
+
+Youth Mentoring
+
+Courses
+Here's the list of courses with duplicate lines removed:
+
+Courses
+
+Advanced Calculus with Analytical Geometry I
+MATH 251
+Associated with College of San Mateo
+
+Advanced Calculus with Analytical Geometry II
+MATH 252
+Associated with College of San Mateo
+
+Algorithms
+CS 3000
+Associated with Northeastern University
+
+Data Structures: Java
+CIS 256
+Associated with College of San Mateo
+
+Database Design
+CS 3200
+Associated with Northeastern University
+
+Designing Interactive Experiences
+ARTF 1350
+Associated with Northeastern University
+
+Discrete Structures
+CS 1800
+Associated with Northeastern University
+
+Foundations of Software Engineering (Graduate Level)
+CS 5500
+Associated with Northeastern University
+
+Human Computer Interaction
+IS 4300
+Associated with Northeastern University
+
+Introduction to Object-Oriented Program Design
+CIS 254
+Associated with College of San Mateo
+
+Introduction to Web Design
+ART 440
+Associated with College of San Mateo
+
+Object-Oriented Design
+CS 3500
+Associated with Northeastern University
+
+PHIL 1145
+Tech and Human Values
+Associated with Northeastern University
+
+Physics with Calculus I
+PHYS 250
+Associated with College of San Mateo
+
+Programming Methods: Java
+CIS 255
+Associated with College of San Mateo
+
+Projects in Cloud Computing (with AWS)
+CS 4973
+Associated with Northeastern University
+
+Prototyping with Code
+ARTG 2262
+Associated with Northeastern University
+
+Honors & awards
+Research Justice at the Intersections Scholar
+Issued by Mills Institute at Northeastern University · Jun 2024
+Associated with Northeastern University
+One of three students acknowledged for their success in conducting social justice-driven research, specifically on making technology more accessible for marginalized communities. My research partners with Northeastern Jumpstart to help understand how children learn most effectively. Ultimately, I will integrate STEM into Jumpstart's curriculum for preschoolers from low-income households.
+
+PEAK Experience: Base Camp Award
+Issued by Undergraduate Research and Fellowships · May 2024
+Associated with Northeastern University
+Supports researchers with an ambitious mindset to learn and conduct cutting-edge research. My research focuses on language development in bilingual Latinx households, fostering a deeper understanding of bilingualism beyond previous research. Previous research has insufficiently acknowledged and valued the unique sociolinguistic and parenting practices of US Latinx families
+
+M Batlin & M Van Blitter-Kirsch Scholars
+Apr 2024
+Associated with Northeastern University
+
+Dean’s List
+Issued by Northeastern University · Jan 2024
+Associated with Northeastern University
+Awarded: December 2023, May 2024, May 2025
+
+Cargill Scholarship
+Issued by San Mateo County Community Colleges Foundation · May 2023
+Associated with College of San Mateo
+One of two College of San Mateo students recognized for their bravery and determination to pursue industries they are underrepresented in
+
+Dean's List of Honor
+Issued by College of San Mateo · May 2023
+Associated with College of San Mateo
+Recognizes the academic success of students who maintain a 3.30 or higher GPA. Only 7% of the College of San Mateo student body is honored for this achievement.
+Awarded: Fall 2021, Spring 2022, Fall 2022, Spring 2023
+
+PanHellenic Scholarship
+Issued by PanHellenic Scholarship Foundation · May 2023
+One of two graduating seniors recognized for their high scholastic achievement and academic excellence
+
+Peninsula Chinese Business Association Encouragement Scholarship
+Issued by Peninsula Chinese Business Association · May 2023
+One of three graduating seniors awarded for the impact they've made in their community
+
+Taekwondo Sparring National Silver Medalist
+Issued by USA Taekwondo · Jul 2022Issued by USA Taekwondo · Jul 2022
+In 14 years of Taekwondo, I trained in bo staff, double-handed nunchucks, and sparring. I learned determination, sportsmanship, and perseverance and mentored younger athletes as they navigated a loss. 
+Earned 2nd-degree black belt at age 11 
+2017 & 2019 Sparring State Gold Medalist 
+
+Coder Games Bronze Medalist
+Issued by theCoderSchool · May 2021
+Associated with theCoderSchool
+A nationwide coding competition where individuals are given an hour to complete as many coding assignments as possible, each of which is assigned points based on difficulty level
+Awarded: 2020, 2021
+
+Organizations
+Entrepreneurs Club
+Director of Software Development · May 2024 - Dec 2024
+Associated with Northeastern University
+- Developed and enhanced the Entrepreneurs Club’s website using React and JavaScript, focusing on creating a dynamic and engaging user experience
+- Developed the Events, Past Speakers, and Past Ventures pages to guide over 200+ active members and 20+ ventures towards funding, branding, and entrepreneurial resources
+- Worked closely with the Design team, Operations team, and the Director of Technology to deliver high-quality web solutions
+
+Russell Women in Science Leadership Program
+Russell scholar · Feb 2024 - Aug 2024
+Associated with Northeastern University
+One of six students accepted into this research and experiential learning program
+
+Effective Altruism Fellowship
+Sep 2023 - Dec 2023
+Associated with Northeastern University London
+Accepted into an eight-week fellowship with weekly discussions on:
+- AI Ethics
+- Longtermism
+- EA Method: Prioritizing global problems, interventions, and charities on marginal cost-effectiveness
+
+Associated Students of the College of San Mateo
+Elected Senator · Sep 2022 - May 2023
+Associated with College of San Mateo
+- Represented the student voice of 6500+ students in the college's decision-making process, such as cultural diversity and financial aid
+- Advocated for a more affordable education, which helped push and enhance the transparency of SB 893, a free college initiative for San Mateo residents and students with financial need
+
+Middle College Effect
+Steering Committee Leader and Club Leader · Sep 2021 - May 2023
+Associated with College of San Mateo
+- Led club meetings and fundraisers to provide Women in Guatemala with microloans and entrepreneurial training
+- Implemented a rivalry system between classes to encourage engagement for the Annual Penny Wars fundraiser
+- Raised over 2700 dollars, 55 percent more than the prior year
+
+Cultural Awareness Board
+Vice Chair · Sep 2021 - May 2022
+Associated with College of San Mateo
+- Led the execution of 10+ diverse events to educate and promote equality within the school community
+- Served as the Master of Ceremonies for the Black History panel and guided discussions on the panelists’ in-depth perspectives on discrimination
+- Secured the Black History panel’s main speaker, Ms. Claire Mack, San Mateo’s first Black mayor
+
+Rise in Revolution: A Social Justice Conference
+Lead Volunteer Coordinator · Sep 2021 - May 2022
+Associated with College of San Mateo
+- Program-managed a multi-day social justice conference to bring cultural awareness to the community
+- Coordinated outreach across the campus, oversaw recruitment, and organized advertising
+- Educated and inspired peers with different perspectives on critical social issues including homelessnes
+
+Youth Catalyst Liberatory Leadership
+Project Leader · Sep 2021 - May 2022
+Associated with College of San Mateo
+Led a project proposal that encouraged student autonomy in their education. One of twelve students nominated into the program by Middle College faculty.
+Learned and discussed:
+- Systemic inequalities
+- Importance and art of advocating
+- Necessary affirming traditions within the school community
