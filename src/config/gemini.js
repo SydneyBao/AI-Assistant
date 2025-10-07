@@ -1,14 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Read API key from Vite envs. Vite exposes variables prefixed with VITE_.
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-
-if (!apiKey || typeof apiKey !== "string" || apiKey.trim().length === 0) {
-  // Provide a clear error early if the key isn't available
-  console.error(
-    "Gemini API key is missing. Set VITE_GEMINI_API_KEY in a .env(.local) file at the project root."
-  );
-}
 
 const genAI = new GoogleGenerativeAI(apiKey ?? "");
 
