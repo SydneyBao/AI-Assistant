@@ -1,14 +1,19 @@
-import {
-  GoogleGenerativeAI,
-  HarmCategory,
-  HarmBlockThreshold,
-} from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
+// Read API key from Vite envs. Vite exposes variables prefixed with VITE_.
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey);
+
+if (!apiKey || typeof apiKey !== "string" || apiKey.trim().length === 0) {
+  // Provide a clear error early if the key isn't available
+  console.error(
+    "Gemini API key is missing. Set VITE_GEMINI_API_KEY in a .env(.local) file at the project root."
+  );
+}
+
+const genAI = new GoogleGenerativeAI(apiKey ?? "");
 
 const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-pro-latest",
+  model: "gemini-flash-latest",
   systemInstruction: "friendly, inviting to ask follow up questions",
 });
 
@@ -21,6 +26,12 @@ const generationConfig = {
 };
 
 async function run(prompt) {
+  if (!apiKey || apiKey === "YOUR_GEMINI_API_KEY_HERE") {
+    throw new Error(
+      "Missing Gemini API key. Add VITE_GEMINI_API_KEY to .env.local and restart the dev server."
+    );
+  }
+
   const chatSession = model.startChat({
     generationConfig,
     history: [
@@ -57,9 +68,25 @@ async function run(prompt) {
     ],
   });
 
-  const result = await chatSession.sendMessage(prompt);
-  const response = result.response;
-  return response.text();
+  try {
+    const result = await chatSession.sendMessage(prompt);
+    const response = result.response;
+    return response.text();
+  } catch (err) {
+    // Normalize common error cases into friendly messages
+    const msg = `${err?.message || err}`;
+    if (msg.includes("models/gemini-pro is not found") || msg.includes("gemini-pro is not found")) {
+      throw new Error(
+        "The configured model 'gemini-pro' is no longer available. Update your config to use 'gemini-1.5-flash' or 'gemini-1.5-pro'. You can set VITE_GEMINI_MODEL in .env.local."
+      );
+    }
+    if (msg.includes("API key not valid") || msg.includes("API_KEY_INVALID")) {
+      throw new Error(
+        "Your Gemini API key is invalid. Double-check the key in .env.local (VITE_GEMINI_API_KEY) and ensure the Generative Language API is enabled for your Google Cloud project."
+      );
+    }
+    throw err;
+  }
 }
 
 export default run;

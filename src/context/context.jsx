@@ -47,21 +47,27 @@ const ContextProvider = (props) => {
             setRecentPrompt(input);
         }
 
-        const response = await run(prompt);
+        try {
+            const response = await run(prompt);
 
-        let newResponse = response.replace(/\n/g, '<br>')
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/(?<!<br>)\*\s/g, '<br>')
-            .replace(/<br>\*\s/g, '<br>')
-            .replace(/##(.*?)(<br>|$)/g, '<u>$1</u>$2')
-            .split(" ");
+            let newResponse = response.replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/(?<!<br>)\*\s/g, '<br>')
+                .replace(/<br>\*\s/g, '<br>')
+                .replace(/##(.*?)(<br>|$)/g, '<u>$1</u>$2')
+                .split(" ");
 
-        for (let i = 0; i < newResponse.length; i++) {
-            const nextWord = newResponse[i];
-            delay(i, nextWord + " ");
+            for (let i = 0; i < newResponse.length; i++) {
+                const nextWord = newResponse[i];
+                delay(i, nextWord + " ");
+            }
+
+        } catch (e) {
+            const fallback = (e?.message || 'Something went wrong. Please try again.');
+            setResultData(`<span style="color:#b00020">${fallback}</span>`);
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     };
     const contextValue = {
         prevPrompts,
