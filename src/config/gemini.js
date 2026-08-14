@@ -1,83 +1,191 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+const model = import.meta.env.VITE_GEMINI_MODEL || "gemini-3.6-flash";
+const interactionsUrl = import.meta.env.VITE_GEMINI_INTERACTIONS_URL
+  || "https://generativelanguage.googleapis.com/v1beta/interactions?alt=sse";
 
-const genAI = new GoogleGenerativeAI(apiKey ?? "");
+const systemInstruction = `You are Sydney Bao's personal AI assistant. Answer accurately and in useful detail from the reference profile supplied at the beginning of the conversation.
 
-const model = genAI.getGenerativeModel({
-  model: "gemini-flash-latest",
-  systemInstruction: "friendly, inviting to ask follow up questions",
-});
+Use an analysis-first workflow rather than a resume-summary workflow. Internally determine what the user is really trying to learn or decide, form a clear conclusion about Sydney's capabilities, working style, motivations, trajectory, or fit, and then test that conclusion against the full profile. Select one to three of the strongest examples across relevant categories (professional experience, research, projects, leadership, education, awards, skills, and interests), normally using only two. Treat each example as brief proof for the analysis, then explain what it demonstrates and why that implication answers the question. The interpretation should receive more emphasis than the factual recap. Distinguish direct facts from reasonable inferences and briefly qualify an inference when needed.
+
+Do not reiterate the resume, recite every role, stack employer names to demonstrate breadth, or default to chronological job descriptions unless the user explicitly asks for a complete timeline. Mention no more than two employers or roles in a typical analytical answer. Synthesize patterns across experiences, make useful connections, and prioritize interpretation over inventory. For job-description questions, identify the role's underlying needs, map only the strongest demonstrated evidence to those needs, and explain the resulting fit. Never expose hidden chain-of-thought; provide the conclusion, concise rationale, and supporting evidence.
+
+Write concise, direct answers in natural paragraph form. Lead with the answer, select only the strongest relevant evidence, and avoid repeating the same point. Do not use Markdown headings, bullet points, numbered lists, tables, asterisks, or hash marks unless the user explicitly requests them. A narrow factual answer should normally use one paragraph; a broad summary or comparison should normally use two or three short paragraphs. Keep most responses within roughly 1,024 output tokens and never exceed the configured 2,048-token limit. Include concrete names, dates, technologies, outcomes, and metrics only when they directly strengthen the answer.
+
+Treat the supplied profile as the source of truth. Prefer the newest resume or LinkedIn record when historical records conflict, distinguish current roles from past roles, and do not invent missing details, publications, credentials, or outcomes. State uncertainty briefly when a requested fact is not confirmed. Do not suggest improvements unless asked.`;
 
 const generationConfig = {
-  temperature: 0.8,
-  topP: 0.95,
-  topK: 64,
-  maxOutputTokens: 8192,
-  responseMimeType: "text/plain",
+  thinking_level: "medium",
+  max_output_tokens: 2048,
 };
 
-async function run(prompt) {
+class InteractionError extends Error {
+  constructor(message, status = 0) {
+    super(message);
+    this.name = "InteractionError";
+    this.status = status;
+  }
+}
+
+const usableMessages = (messages) => messages.filter((message) => (
+  (message.role === "user" || message.role === "assistant")
+  && !message.failed
+  && !message.isError
+));
+
+const formatTranscript = (messages) => usableMessages(messages)
+  .map((message) => {
+    const speaker = message.role === "assistant" ? "Assistant" : "User";
+    return `${speaker}: ${message.modelContent ?? message.content}`;
+  })
+  .join("\n\n");
+
+const buildInitialInput = ({ prompt, history, profileContext }) => {
+  const transcript = formatTranscript(history);
+  return [
+    "Reference profile for this conversation:",
+    profileContext.trim(),
+    transcript ? `Conversation restored from this app:\n${transcript}` : "",
+    `Current user request:\n${prompt}`,
+  ].filter(Boolean).join("\n\n");
+};
+
+const readErrorMessage = async (response) => {
+  const fallback = `Gemini request failed with status ${response.status}.`;
+  try {
+    const payload = await response.json();
+    return payload?.error?.message || fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+const parseEventData = (block) => block
+  .split(/\r?\n/)
+  .filter((line) => line.startsWith("data:"))
+  .map((line) => line.slice(5).trimStart())
+  .join("\n");
+
+const streamInteraction = async ({ input, previousInteractionId, onChunk }) => {
+  const requestBody = {
+    model,
+    input,
+    stream: true,
+    store: true,
+    system_instruction: systemInstruction,
+    generation_config: generationConfig,
+  };
+
+  if (previousInteractionId) {
+    requestBody.previous_interaction_id = previousInteractionId;
+  }
+
+  const response = await fetch(interactionsUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "text/event-stream",
+      "x-goog-api-key": apiKey,
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  if (!response.ok) {
+    throw new InteractionError(await readErrorMessage(response), response.status);
+  }
+  if (!response.body) {
+    throw new InteractionError("Gemini returned an empty response stream.");
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let text = "";
+  let interactionId = "";
+
+  const consumeBlock = (block) => {
+    const data = parseEventData(block);
+    if (!data || data === "[DONE]") return;
+
+    let event;
+    try {
+      event = JSON.parse(data);
+    } catch {
+      return;
+    }
+
+    interactionId = event.interaction?.id
+      || event.interaction_id
+      || interactionId;
+
+    if (event.event_type === "step.delta" && event.delta?.type === "text") {
+      const chunk = event.delta.text || "";
+      text += chunk;
+      onChunk?.(chunk);
+    }
+
+    if (event.error) {
+      throw new InteractionError(event.error.message || "Gemini could not complete the response.");
+    }
+  };
+
+  while (true) {
+    const { done, value } = await reader.read();
+    buffer += decoder.decode(value, { stream: !done });
+    const blocks = buffer.split(/\r?\n\r?\n/);
+    buffer = blocks.pop() ?? "";
+    blocks.forEach(consumeBlock);
+    if (done) break;
+  }
+
+  if (buffer.trim()) consumeBlock(buffer);
+  if (!interactionId) {
+    throw new InteractionError("Gemini completed without returning a conversation identifier.");
+  }
+
+  return { text, interactionId };
+};
+
+async function run({
+  prompt,
+  history = [],
+  profileContext = "",
+  previousInteractionId = "",
+  onChunk,
+}) {
   if (!apiKey || apiKey === "YOUR_GEMINI_API_KEY_HERE") {
     throw new Error(
       "Missing Gemini API key. Add VITE_GEMINI_API_KEY to .env.local and restart the dev server."
     );
   }
 
-  const chatSession = model.startChat({
-    generationConfig,
-    history: [
-      {
-        role: "user",
-        parts: [
-          { text: "You are Sydney's personal AI assistant. All information about Sydney's work experience, education, and interests is provided in the question prompt. Provide detailed explainations unless otherwise asked. If a job description is provided, focus your answer on why Sydney is a strong fit for the role based on her experience and skills. Do not include suggestions for improvement unless specifically asked." }
-        ],
-      },
-      {
-        role: "user",
-        parts: [
-          { text: "Sydney's LinkedIn is https://www.linkedin.com/in/sydney-bao/. Sydney's GitHub is https://github.com/SydneyBao. Using React, Sydney coded a personal portfolio at https://sydneybao.com/" },
-        ],
-      },
-      {
-        role: "user",
-        parts: [
-          { text: "On Sydney's free time, she enjoys making digital music through mashups and remixes, drawing on her digital art pad, and cheering on her San Francisco 49ers, San Francisco Giants, and Golden State Warriors. Through 14 years of Taekwondo, Sydney has earned a 2nd degree black belt at age 11, competed in sparring on the national level (placing silver at the 2022 U.S. Nationals and Gold at the 2017 and 2019 California State Championships), and learned the bo-staff and nunchucks. She performed her own double-handed nunchucks routine at the Foster City Arts and Wine Festival, which inspired her studio to teach double handed nunchucks. Currently she is competes on Northeastern Taekwondo's A Team for sparring." },
-        ],
-      },
-      {
-        role: "user",
-        parts: [
-          { text: "On her free time, Sydney programmed a full-stack news aggregator website called HeadshotNews. She used Firebase to store and update the articles daily and Web scraped 5 popular Esports sites using Puppeteer for HTML parsing and informational retrieval. Sydney is proudest of this project because despite placing third in the Northeastern Husky Startup Challenge and her business and marketing teammates deciding to pursue other projects, she pursued the project on her own. She taught herself how to use React, Puppeteer, and Firebase. The link can be found at https://headshotnews.com/" },
-        ],
-      },
-      {
-        role: "user",
-        parts: [
-          { text: "Additionally, she programmed a nutrition chatbot that allows restaurants to upload their nutrition information. She imprived the llmware/bling-1b-0.1 model’s accuracy by over 50% by experimenting with different configurations to store the input data and optimize the model's natural language processing via Retrieval-Augmented Generation. she Utilized the speechRecognition, Tkinter, and pyttsx3 libraries to process speech inputs and convert text outputs into speech, enhancing user interaction and accessibility, making it compatible at drive through windows" },
-        ],
-      },
-    ],
+  const execute = (interactionId) => streamInteraction({
+    input: interactionId
+      ? prompt
+      : buildInitialInput({ prompt, history, profileContext }),
+    previousInteractionId: interactionId,
+    onChunk,
   });
 
   try {
-    const result = await chatSession.sendMessage(prompt);
-    const response = result.response;
-    return response.text();
-  } catch (err) {
-    // Normalize common error cases into friendly messages
-    const msg = `${err?.message || err}`;
-    if (msg.includes("models/gemini-pro is not found") || msg.includes("gemini-pro is not found")) {
+    return await execute(previousInteractionId);
+  } catch (error) {
+    const stateExpired = previousInteractionId
+      && (error?.status === 400 || error?.status === 404)
+      && !/api key|permission|quota/i.test(error?.message || "");
+
+    if (stateExpired) {
+      // Rebuild an expired server-side conversation once from the locally
+      // persisted transcript and continue with a fresh interaction chain.
+      return execute("");
+    }
+
+    const message = `${error?.message || error}`;
+    if (/api key not valid|api_key_invalid/i.test(message)) {
       throw new Error(
-        "The configured model 'gemini-pro' is no longer available. Update your config to use 'gemini-1.5-flash' or 'gemini-1.5-pro'. You can set VITE_GEMINI_MODEL in .env.local."
+        "Your Gemini API key is invalid. Check VITE_GEMINI_API_KEY and ensure the Generative Language API is enabled."
       );
     }
-    if (msg.includes("API key not valid") || msg.includes("API_KEY_INVALID")) {
-      throw new Error(
-        "Your Gemini API key is invalid. Double-check the key in .env.local (VITE_GEMINI_API_KEY) and ensure the Generative Language API is enabled for your Google Cloud project."
-      );
-    }
-    throw err;
+    throw error;
   }
 }
 
