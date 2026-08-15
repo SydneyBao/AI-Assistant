@@ -3,13 +3,18 @@ import "./main.css";
 import { assets } from "../../assets/assets";
 import { Context } from "../../context/context";
 import { pdfjs } from "react-pdf";
+import CreatorModal from "../creator/CreatorModal";
+import {
+  getFirstName,
+  loadProfile,
+  possessive,
+  saveProfile,
+} from "../../config/profile";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
   import.meta.url,
 ).toString();
-
-const LINKEDIN_URL = "https://www.linkedin.com/in/sydney-bao/";
 
 const toParagraphs = (content) => content
   .replace(/^\s*#{1,6}\s+/gm, "\n")
@@ -66,16 +71,29 @@ const Main = () => {
     setJobDescAttached,
     jobFileName,
     setJobFileName,
+    clearChats,
   } = useContext(Context);
   const resultRef = useRef(null);
-  const [profileSummary, setProfileSummary] = useState("");
-  const [profileLoaded, setProfileLoaded] = useState(false);
+  const [profile, setProfile] = useState(loadProfile);
+  const [profileSummary, setProfileSummary] = useState(profile.summary || "");
+  const [profileLoaded, setProfileLoaded] = useState(Boolean(profile.summary));
+  const [creatorOpen, setCreatorOpen] = useState(false);
+  const [deploymentNotice, setDeploymentNotice] = useState(null);
 
   const loading = pendingChatId === activeChatId;
   const showResult = activeMessages.length > 0;
+  const firstName = getFirstName(profile.name);
+  const firstNamePossessive = possessive(firstName);
+  const hasProfileLinks = Boolean(profile.githubUrl || profile.linkedinUrl || profile.websiteUrl);
 
   useEffect(() => {
     const fetchProfileSummary = async () => {
+      if (profile.summary) {
+        setProfileSummary(profile.summary);
+        setProfileLoaded(true);
+        return;
+      }
+
       try {
         const response = await fetch("/profile-summary.md");
         if (!response.ok) throw new Error(`Profile summary returned ${response.status}`);
@@ -88,7 +106,11 @@ const Main = () => {
     };
 
     fetchProfileSummary();
-  }, []);
+  }, [profile.summary]);
+
+  useEffect(() => {
+    document.title = `${profile.name} · Resume Assistant`;
+  }, [profile.name]);
 
   useEffect(() => {
     if (resultRef.current) {
@@ -108,6 +130,7 @@ const Main = () => {
       prompt: question,
       modelPrompt,
       profileContext: profileSummary,
+      profileName: profile.name,
       attachmentName: jobDescAttached ? jobFileName : "",
     });
   };
@@ -136,28 +159,49 @@ const Main = () => {
     event.target.value = "";
   };
 
+  const handleProfileCreated = (createdProfile, deployment) => {
+    saveProfile(createdProfile);
+    setProfile(createdProfile);
+    setProfileSummary(createdProfile.summary);
+    setProfileLoaded(true);
+    setDeploymentNotice(deployment);
+    clearChats();
+    setCreatorOpen(false);
+  };
+
   return (
     <div className="main">
       <header className="nav">
         <div className="assistant-heading">
-          <p>Why Sydney Bao?</p>
+          <p>Why {profile.name}?</p>
           <span>Resume Assistant</span>
         </div>
+        <button className="creator-trigger" type="button" onClick={() => setCreatorOpen(true)}>
+          <span aria-hidden="true">+</span>
+          Create yours
+        </button>
       </header>
+      {deploymentNotice ? (
+        <div className={`deployment-notice ${deploymentNotice.status}`} role="status">
+          <span>{deploymentNotice.message}</span>
+          {deploymentNotice.url ? <a href={deploymentNotice.url} target="_blank" rel="noreferrer">Open site</a> : null}
+          <button type="button" onClick={() => setDeploymentNotice(null)} aria-label="Dismiss deployment message">×</button>
+        </div>
+      ) : null}
       <div className="main-container">
         {!showResult ? (
           <div className="welcome">
             <div className="greet">
-              <span className="greet-eyebrow">Sydney Bao · Resume assistant</span>
+              <span className="greet-eyebrow">{profile.name} · Resume assistant</span>
               <h1>What would you like to know?</h1>
-              <p>Get concise answers about Sydney&apos;s experience, projects, research, and qualifications.</p>
+              <p>Get concise answers about {firstNamePossessive} experience, projects, research, and qualifications.</p>
             </div>
             <div className="cards">
               {[
-                "Summarize Sydney's coding experience",
-                "Describe Sydney's ideal work environment",
-                "Which coding project is Sydney most proud of?",
-                "What does Sydney like to do for fun?",
+                `Summarize ${firstNamePossessive} coding experience`,
+                `Describe ${firstNamePossessive} ideal work environment`,
+                `Which coding project is ${firstName} most proud of?`,
+                `What does ${firstName} like to do for fun?`,
               ].map((suggestion) => (
                 <button
                   className="card"
@@ -230,7 +274,7 @@ const Main = () => {
                 type="text"
                 placeholder={profileLoaded
                   ? "Ask me anything or upload a job description..."
-                  : "Loading Sydney's profile..."}
+                  : `Loading ${firstNamePossessive} profile...`}
                 disabled={Boolean(pendingChatId) || !profileLoaded}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" && !event.metaKey && input.trim()) {
@@ -253,20 +297,35 @@ const Main = () => {
             </div>
           </div>
 
-          <div className="bottom-info">
-            <span>Learn more</span>
-            <a href="https://github.com/SydneyBao" target="_blank" rel="noopener noreferrer" className="profile-link" aria-label="Sydney's GitHub">
-              <img src={assets.github_icon} alt="GitHub" />
-            </a>
-            <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="profile-link" aria-label="Sydney's LinkedIn">
-              <img src={assets.linkedin_icon} alt="LinkedIn" />
-            </a>
-            <a href="https://sydneybao.com/" target="_blank" rel="noopener noreferrer" className="profile-link" aria-label="Sydney's website">
-              <img src={assets.logo} alt="Sydney's website" />
-            </a>
-          </div>
+          {hasProfileLinks ? (
+            <div className="bottom-info">
+              <span>Learn more</span>
+              {profile.githubUrl ? (
+                <a href={profile.githubUrl} target="_blank" rel="noopener noreferrer" className="profile-link" aria-label={`${profile.name}'s GitHub`}>
+                  <img src={assets.github_icon} alt="GitHub" />
+                </a>
+              ) : null}
+              {profile.linkedinUrl ? (
+                <a href={profile.linkedinUrl} target="_blank" rel="noopener noreferrer" className="profile-link" aria-label={`${profile.name}'s LinkedIn`}>
+                  <img src={assets.linkedin_icon} alt="LinkedIn" />
+                </a>
+              ) : null}
+              {profile.websiteUrl ? (
+                <a href={profile.websiteUrl} target="_blank" rel="noopener noreferrer" className="profile-link" aria-label={`${profile.name}'s website`}>
+                  <img src={assets.logo} alt={`${profile.name}'s website`} />
+                </a>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
+      {creatorOpen ? (
+        <CreatorModal
+          currentProfile={profile}
+          onClose={() => setCreatorOpen(false)}
+          onComplete={handleProfileCreated}
+        />
+      ) : null}
     </div>
   );
 };

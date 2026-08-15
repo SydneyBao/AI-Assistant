@@ -9,3 +9,9 @@ Set `VITE_GEMINI_API_KEY` in `.env.local`. The optional `VITE_GEMINI_MODEL` vari
 Responses are instructed to be concise paragraphs, normally staying near or below 1,024 output tokens, with a hard `max_output_tokens` limit of 2,048.
 
 The assistant uses an analysis-first evidence workflow: it infers the user's underlying question, forms a conclusion, selects a small number of supporting experiences, and explains what they demonstrate instead of repeating the resume chronologically. Internal chain-of-thought is not shown.
+
+## Create your own assistant
+
+The **Create yours** flow parses a PDF or text résumé locally and turns it into reusable profile context without making an additional Gemini request. The resulting name, résumé context, and optional profile links are saved in the browser and replace the default profile throughout the UI and Gemini instructions. Switching profiles starts a clean chat history so records from different people are not mixed.
+
+Custom-domain publishing requires hosting credentials and domain verification, which should never be exposed in browser code. Configure `VITE_DEPLOY_API_URL` with an HTTPS backend that accepts `POST { targetUrl, profile }`, publishes the generated assistant through your chosen host, verifies the custom domain, and returns `{ url }`. Without that endpoint, a requested deployment URL is saved locally and the UI clearly reports that publishing still needs a deployment service.

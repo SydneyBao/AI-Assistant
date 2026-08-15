@@ -3,7 +3,8 @@ import run from "../config/gemini";
 
 export const Context = createContext();
 
-const STORAGE_KEY = "sydney-ai-assistant-chats-v1";
+const STORAGE_KEY = "resume-assistant-chats-v1";
+const LEGACY_STORAGE_KEY = "sydney-ai-assistant-chats-v1";
 const REVEAL_INTERVAL_MS = 16;
 
 const makeId = () => globalThis.crypto?.randomUUID?.()
@@ -76,7 +77,10 @@ const createTextRevealer = (onReveal) => {
 
 const loadChats = () => {
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "[]");
+    const storedChats = localStorage.getItem(STORAGE_KEY)
+      ?? localStorage.getItem(LEGACY_STORAGE_KEY)
+      ?? "[]";
+    const saved = JSON.parse(storedChats);
     return Array.isArray(saved) ? saved : [];
   } catch {
     return [];
@@ -149,10 +153,21 @@ const ContextProvider = ({ children }) => {
       : chat));
   };
 
+  const clearChats = () => {
+    setChats([]);
+    setActiveChatId(null);
+    setPendingChatId(null);
+    setInput("");
+    setJobDescription("");
+    setJobDescAttached(false);
+    setJobFileName("");
+  };
+
   const onSent = async ({
     prompt,
     modelPrompt = prompt,
     profileContext = "",
+    profileName = "the profile owner",
     attachmentName = "",
   }) => {
     const question = prompt.trim();
@@ -160,7 +175,7 @@ const ContextProvider = ({ children }) => {
 
     const conversationId = activeChatId ?? makeId();
     const priorMessages = activeChat?.messages ?? [];
-    const profileVersion = makeProfileVersion(profileContext);
+    const profileVersion = makeProfileVersion(`${profileName}\n${profileContext}`);
     const profileChanged = activeChat?.profileVersion !== profileVersion;
     const previousInteractionId = profileChanged
       ? ""
@@ -224,6 +239,7 @@ const ContextProvider = ({ children }) => {
         prompt: modelPrompt,
         history: priorMessages,
         profileContext,
+        profileName,
         previousInteractionId,
         onChunk: (chunk) => {
           streamedResponse += chunk;
@@ -282,6 +298,7 @@ const ContextProvider = ({ children }) => {
     pendingChatId,
     archiveChat,
     restoreChat,
+    clearChats,
     onSent,
     selectChat,
     input,

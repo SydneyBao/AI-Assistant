@@ -1,0 +1,324 @@
+.creator-backdrop {
+    position: fixed;
+    z-index: 100;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 28px;
+    background: rgba(24, 27, 29, 0.42);
+    backdrop-filter: blur(8px);
+    animation: creator-backdrop-in 160ms ease both;
+}
+
+.creator-modal {
+    width: min(100%, 760px);
+    max-height: min(90vh, 860px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(255, 255, 255, 0.66);
+    border-radius: 24px;
+    color: #272a2d;
+    background: #ffffff;
+    box-shadow: 0 30px 90px rgba(16, 23, 26, 0.24);
+    animation: creator-modal-in 190ms ease both;
+}
+
+@keyframes creator-backdrop-in {
+    from { opacity: 0; }
+}
+
+@keyframes creator-modal-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.985);
+    }
+}
+
+.creator-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 25px 28px 22px;
+    border-bottom: 1px solid #eceef0;
+}
+
+.creator-header > div > span {
+    color: #448b9a;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.creator-header h2 {
+    margin: 5px 0 4px;
+    font-size: 25px;
+    font-weight: 620;
+    letter-spacing: -0.025em;
+}
+
+.creator-header p,
+.creator-section-heading p {
+    color: #7a7e82;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.creator-header > button {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 10px;
+    color: #72767a;
+    background: #f2f3f4;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 1;
+}
+
+.creator-form {
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.creator-section {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 14px;
+    padding: 23px 28px;
+    border-bottom: 1px solid #f0f1f2;
+}
+
+.creator-step {
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    color: #356b75;
+    background: #eaf2f3;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.creator-section-content {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.creator-section-heading h3 {
+    margin-bottom: 2px;
+    font-size: 16px;
+    font-weight: 620;
+}
+
+.creator-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.creator-field > span {
+    color: #5f6468;
+    font-size: 12px;
+    font-weight: 550;
+}
+
+.creator-field input {
+    width: 100%;
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid #dfe1e3;
+    border-radius: 11px;
+    outline: 0;
+    color: #272a2d;
+    background: #ffffff;
+    font-size: 14px;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.creator-field input:focus {
+    border-color: #8fb3ba;
+    box-shadow: 0 0 0 3px rgba(68, 139, 154, 0.11);
+}
+
+.creator-field-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.creator-upload {
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 13px;
+    border: 1px dashed #cbd0d3;
+    border-radius: 13px;
+    background: #fafbfb;
+    cursor: pointer;
+}
+
+.creator-upload.complete {
+    border-style: solid;
+    border-color: #b9d2c2;
+    background: #f4faf6;
+}
+
+.creator-upload input {
+    display: none;
+}
+
+.creator-upload-icon {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 11px;
+    color: #42727b;
+    background: #e8f0f1;
+    font-size: 22px;
+}
+
+.creator-upload > span:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.creator-upload strong {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.creator-upload small {
+    color: #8c9094;
+    font-size: 11px;
+}
+
+.secondary-button,
+.primary-button {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 13px;
+    border-radius: 10px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.secondary-button {
+    border: 1px solid #dfe1e3;
+    color: #53585c;
+    background: #ffffff;
+}
+
+.secondary-button:hover {
+    background: #f5f6f6;
+}
+
+.primary-button {
+    border: 1px solid #26363a;
+    color: #ffffff;
+    background: #26363a;
+}
+
+.primary-button:hover:not(:disabled) {
+    border-color: #448b9a;
+    background: #448b9a;
+}
+
+.primary-button:disabled,
+.secondary-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.creator-error {
+    margin: 18px 28px 0 74px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    color: #9b2c24;
+    background: #fff1f0;
+    font-size: 12px;
+}
+
+.creator-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 28px;
+}
+
+.creator-footer > p {
+    max-width: 370px;
+    color: #888c90;
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+.creator-footer > div {
+    display: flex;
+    gap: 8px;
+}
+
+@media (max-width: 650px) {
+    .creator-backdrop {
+        padding: 0;
+    }
+
+    .creator-modal {
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        border: 0;
+        border-radius: 0;
+    }
+
+    .creator-header,
+    .creator-section,
+    .creator-footer {
+        padding-right: 18px;
+        padding-left: 18px;
+    }
+
+    .creator-section {
+        grid-template-columns: 28px minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .creator-field-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .creator-footer {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .creator-footer > div {
+        justify-content: flex-end;
+    }
+
+    .creator-error {
+        margin-left: 18px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .creator-backdrop,
+    .creator-modal {
+        animation: none;
+    }
+}
