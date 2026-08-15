@@ -2,19 +2,15 @@ import { useContext, useEffect, useRef, useState } from "react";
 import "./main.css";
 import { assets } from "../../assets/assets";
 import { Context } from "../../context/context";
-import { pdfjs } from "react-pdf";
 import CreatorModal from "../creator/CreatorModal";
+import { extractFileText } from "../../utils/extractFileText";
 import {
   getFirstName,
   loadProfile,
   possessive,
+  restoreDefaultProfile,
   saveProfile,
 } from "../../config/profile";
-
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url,
-).toString();
 
 const toParagraphs = (content) => content
   .replace(/^\s*#{1,6}\s+/gm, "\n")
@@ -72,6 +68,7 @@ const Main = () => {
     jobFileName,
     setJobFileName,
     clearChats,
+    newChat,
   } = useContext(Context);
   const resultRef = useRef(null);
   const [profile, setProfile] = useState(loadProfile);
@@ -79,6 +76,7 @@ const Main = () => {
   const [profileLoaded, setProfileLoaded] = useState(Boolean(profile.summary));
   const [creatorOpen, setCreatorOpen] = useState(false);
   const [deploymentNotice, setDeploymentNotice] = useState(null);
+  const [jobUploadNotice, setJobUploadNotice] = useState(null);
 
   const loading = pendingChatId === activeChatId;
   const showResult = activeMessages.length > 0;
@@ -133,6 +131,7 @@ const Main = () => {
       profileName: profile.name,
       attachmentName: jobDescAttached ? jobFileName : "",
     });
+    setJobUploadNotice(null);
   };
 
   const handleSend = () => sendQuestion(input);
@@ -141,22 +140,31 @@ const Main = () => {
     const file = event.target.files[0];
     if (!file) return;
 
-    let jobDescText = "";
-    if (file.type === "application/pdf") {
-      const pdf = await pdfjs.getDocument(URL.createObjectURL(file)).promise;
-      for (let i = 1; i <= pdf.numPages; i += 1) {
-        const page = await pdf.getPage(i);
-        const content = await page.getTextContent();
-        jobDescText += `${content.items.map((item) => item.str).join(" ")}\n`;
-      }
-    } else {
-      jobDescText = await file.text();
-    }
+    setJobUploadNotice(null);
+    try {
+      const { text, extracted } = await extractFileText(file);
+      if (!text.trim()) throw new Error("No readable text was found in that file.");
 
-    setJobDescription(jobDescText);
-    setJobDescAttached(true);
-    setJobFileName(file.name);
-    event.target.value = "";
+      setJobDescription(text);
+      setJobDescAttached(true);
+      setJobFileName(file.name);
+      if (!extracted) {
+        setJobUploadNotice({
+          tone: "warning",
+          message: "File accepted. This format has no browser-readable text, so only its name, type, and size will be sent with your question.",
+        });
+      }
+    } catch (fileError) {
+      setJobDescription("");
+      setJobDescAttached(false);
+      setJobFileName("");
+      setJobUploadNotice({
+        tone: "error",
+        message: fileError.message || "Unable to read that file.",
+      });
+    } finally {
+      event.target.value = "";
+    }
   };
 
   const handleProfileCreated = (createdProfile, deployment) => {
@@ -169,6 +177,17 @@ const Main = () => {
     setCreatorOpen(false);
   };
 
+  const handleReturnToDefault = () => {
+    const defaultProfile = restoreDefaultProfile();
+    setProfile(defaultProfile);
+    setProfileSummary("");
+    setProfileLoaded(false);
+    setDeploymentNotice(null);
+    setJobUploadNotice(null);
+    setCreatorOpen(false);
+    newChat();
+  };
+
   return (
     <div className="main">
       <header className="nav">
@@ -176,10 +195,23 @@ const Main = () => {
           <p>Why {profile.name}?</p>
           <span>Resume Assistant</span>
         </div>
-        <button className="creator-trigger" type="button" onClick={() => setCreatorOpen(true)}>
-          <span aria-hidden="true">+</span>
-          Create yours
-        </button>
+        <div className="profile-actions">
+          {profile.isCustom ? (
+            <button
+              className="default-profile-trigger"
+              type="button"
+              onClick={handleReturnToDefault}
+              disabled={Boolean(pendingChatId)}
+            >
+              <span aria-hidden="true">←</span>
+              Back to Sydney Bao
+            </button>
+          ) : null}
+          <button className="creator-trigger" type="button" onClick={() => setCreatorOpen(true)}>
+            <span aria-hidden="true">+</span>
+            Create yours
+          </button>
+        </div>
       </header>
       {deploymentNotice ? (
         <div className={`deployment-notice ${deploymentNotice.status}`} role="status">
@@ -252,7 +284,6 @@ const Main = () => {
               <label className="custom-file-upload">
                 <input
                   type="file"
-                  accept=".txt,.pdf"
                   style={{ display: "none" }}
                   onChange={handleFile}
                   disabled={Boolean(pendingChatId)}
@@ -264,7 +295,7 @@ const Main = () => {
                     <svg className="composer-icon" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M12 5v14M5 12h14" />
                     </svg>
-                    <span className="tooltip-text">Upload job description (.pdf or .txt)</span>
+                    <span className="tooltip-text">Upload job description (any file type)</span>
                   </span>
                 )}
               </label>
@@ -295,6 +326,11 @@ const Main = () => {
                 </svg>
               </button>
             </div>
+            {jobUploadNotice ? (
+              <div className={`job-upload-notice ${jobUploadNotice.tone}`} role={jobUploadNotice.tone === "error" ? "alert" : "status"}>
+                {jobUploadNotice.message}
+              </div>
+            ) : null}
           </div>
 
           {hasProfileLinks ? (

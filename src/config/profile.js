@@ -26,6 +26,11 @@ export const saveProfile = (profile) => {
   localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
 };
 
+export const restoreDefaultProfile = () => {
+  localStorage.removeItem(PROFILE_STORAGE_KEY);
+  return { ...DEFAULT_PROFILE };
+};
+
 export const getFirstName = (name) => name.trim().split(/\s+/)[0] || "this candidate";
 
 export const possessive = (name) => name.endsWith("s") ? `${name}'` : `${name}'s`;

@@ -12,6 +12,10 @@ The assistant uses an analysis-first evidence workflow: it infers the user's und
 
 ## Create your own assistant
 
-The **Create yours** flow parses a PDF or text résumé locally and turns it into reusable profile context without making an additional Gemini request. The resulting name, résumé context, and optional profile links are saved in the browser and replace the default profile throughout the UI and Gemini instructions. Switching profiles starts a clean chat history so records from different people are not mixed.
+The **Create yours** flow accepts any file type. It extracts readable text locally from PDFs and text-based formats (including Markdown, CSV, JSON, HTML, and source files) and turns that text into reusable profile context without making an additional Gemini request. For binary formats that the browser cannot parse, the file is still accepted and the creator clearly reports that only its metadata will be available. The resulting name, profile context, and optional links are saved in the browser and replace the default profile throughout the UI and Gemini instructions. Switching profiles starts a clean chat history so records from different people are not mixed.
+
+Custom assistants show a **Back to Sydney Bao** action in the header. It restores the bundled default profile and opens a fresh chat while preserving previously saved chat records.
+
+The job-description attachment control uses the same unrestricted file handling and local extraction behavior.
 
 Custom-domain publishing requires hosting credentials and domain verification, which should never be exposed in browser code. Configure `VITE_DEPLOY_API_URL` with an HTTPS backend that accepts `POST { targetUrl, profile }`, publishes the generated assistant through your chosen host, verifies the custom domain, and returns `{ url }`. Without that endpoint, a requested deployment URL is saved locally and the UI clearly reports that publishing still needs a deployment service.

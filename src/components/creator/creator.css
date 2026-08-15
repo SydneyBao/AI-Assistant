@@ -203,6 +203,16 @@
     font-size: 11px;
 }
 
+.creator-notice {
+    padding: 10px 12px;
+    border: 1px solid #dce8ea;
+    border-radius: 10px;
+    color: #4f686d;
+    background: #f4f8f9;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
 .secondary-button,
 .primary-button {
     min-height: 38px;

@@ -1,33 +1,10 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import { pdfjs } from "react-pdf";
 import { buildResumeProfileContext } from "../../config/gemini";
 import { deployProfile } from "../../services/deployment";
 import { normalizeUrl } from "../../config/profile";
+import { extractFileText } from "../../utils/extractFileText";
 import "./creator.css";
-
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url,
-).toString();
-
-const extractResumeText = async (file) => {
-  if (file.type !== "application/pdf") return file.text();
-
-  const objectUrl = URL.createObjectURL(file);
-  try {
-    const pdf = await pdfjs.getDocument(objectUrl).promise;
-    const pages = [];
-    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
-      const page = await pdf.getPage(pageNumber);
-      const content = await page.getTextContent();
-      pages.push(content.items.map((item) => item.str).join(" "));
-    }
-    return pages.join("\n");
-  } finally {
-    URL.revokeObjectURL(objectUrl);
-  }
-};
 
 const CreatorModal = ({ currentProfile, onClose, onComplete }) => {
   const [name, setName] = useState(currentProfile.isCustom ? currentProfile.name : "");
@@ -37,6 +14,7 @@ const CreatorModal = ({ currentProfile, onClose, onComplete }) => {
   const [websiteUrl, setWebsiteUrl] = useState(currentProfile.isCustom ? currentProfile.websiteUrl : "");
   const [deploymentUrl, setDeploymentUrl] = useState("");
   const [resumeBusy, setResumeBusy] = useState(false);
+  const [uploadNotice, setUploadNotice] = useState("");
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
 
@@ -46,13 +24,19 @@ const CreatorModal = ({ currentProfile, onClose, onComplete }) => {
 
     setResumeBusy(true);
     setError("");
+    setUploadNotice("");
     try {
-      const text = await extractResumeText(file);
-      if (!text.trim()) throw new Error("No readable text was found in that résumé.");
+      const { text, extracted } = await extractFileText(file);
+      if (!text.trim()) throw new Error("No readable text was found in that file.");
       setResumeText(text);
       setResumeFileName(file.name);
+      if (!extracted) {
+        setUploadNotice("File accepted. This format has no browser-readable text, so only its name, type, and size will be available to the assistant.");
+      }
     } catch (resumeError) {
-      setError(resumeError.message || "Unable to read that résumé.");
+      setResumeText("");
+      setResumeFileName("");
+      setError(resumeError.message || "Unable to read that file.");
     } finally {
       setResumeBusy(false);
       event.target.value = "";
@@ -119,13 +103,14 @@ const CreatorModal = ({ currentProfile, onClose, onComplete }) => {
                 <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Jordan Lee" required />
               </label>
               <label className={`creator-upload${resumeFileName ? " complete" : ""}`}>
-                <input type="file" accept=".pdf,.txt" onChange={handleResume} />
+                <input type="file" onChange={handleResume} />
                 <span className="creator-upload-icon" aria-hidden="true">+</span>
                 <span>
                   <strong>{resumeBusy ? "Reading résumé…" : resumeFileName || "Upload résumé"}</strong>
-                  <small>PDF or TXT</small>
+                  <small>Any file type; readable text is extracted when available</small>
                 </span>
               </label>
+              {uploadNotice ? <div className="creator-notice" role="status">{uploadNotice}</div> : null}
             </div>
           </div>
 
